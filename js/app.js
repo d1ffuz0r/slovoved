@@ -15,6 +15,17 @@ function replaceWord(word, alternative) {
     return '<span style="color: red" title="' + word + ' -> ' + alternative + '"> '+ word + '</span>';
 }
 
+function colorRow(counter) {
+    if (0 < counter <= 1) {
+        return 'table-info';
+    } else if (2 < counter <= 5 ) {
+        return 'table-warning'
+    } else if (counter > 5) {
+        return 'table-danger';
+    }
+}
+
+
 $("body").ready(function(){
     $("#check").click(function() {
         $("#resultdiv").show();
@@ -33,13 +44,17 @@ $("body").ready(function(){
         for (word of words) {
             var alternative = findAlternative(word);
             var newWord = word;
+
             if (alternative) {
-                if (counter[alternative[0]]) {
-                    counter[alternative[0]] += 1
-                } else {
-                    counter[alternative[0]] = 1;
-                }
                 newWord = replaceWord(word, alternative[1]);
+                if (counter[alternative[0]]) {
+                    counter[alternative[0]].counter += 1
+                } else {
+                    counter[alternative[0]] = {
+                        counter: 1,
+                        alternative: alternative[1]
+                    }
+                }
             }
             output.push(newWord);
         }
@@ -47,14 +62,13 @@ $("body").ready(function(){
 
         var words = Object.keys(counter);
         var wordCount = words.length;
+        var output = '';
 
         if (wordCount) {
-            var output = '<ul>';
             for (word of words) {
-                var size = counter[word];
-                output += '<li style="font-size: ' + size + '0pt">' + word + ': ' + size + '</li>';
+                var alternative = counter[word];
+                output += '<tr class="' + colorRow(alternative.counter) + '"><td>' + alternative.counter + '</td><td>' + word + '</td><td>' + alternative.alternative + '</td></tr>';
             }
-            output += '</ul>'
             $('#wordcount').html(wordCount);
         } else {
             var output = '<h3>Поздаврляю! У вас чистейший Русский!🇷🇺</h3>';
