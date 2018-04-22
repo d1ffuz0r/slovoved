@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Говори Правильно - За Чистый Русский!🇷🇺</title>
+
+        <!-- Bootstrap -->
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Шрифты -->
+        <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" async>
+
+        <!-- Стили -->
+        <link href="css/landing-page.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">Сохрани Русский Язык</a>
+            </div>
+        </nav>
+
+        <header class="masthead text-white text-center">
+            <div class="overlay"></div>
+            <div class="container">
+                <br>
+                <br>
+                <div class="row">
+                    <div class="col-xl-9 mx-auto">
+                        <h1>За чистоту Русского языка!🇷🇺</h1>
+                        <h2 class="mb-5">Узнай как очистить текст от ненужных заимствований</h2>
+                    </div>
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-row">
+                            <div class="col-md-10 col-lg-8 col-sm-7 col-xl-7 mx-auto">
+                                <a href="#cleanup" class="btn btn-block btn-lg btn-primary">Начать</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <br>
+            </div>
+        </header>
+
+        <section class="testimonials text-center bg-light" id="cleanup">
+            <div class="container-fluid p-0">
+                <h3 class="mb-4">Вставьте текст</h3>
+                <form action="">
+                  <textarea name="input" id="text" cols="100" rows="15">
+                    Решил тут выставить на продажу свой кроссовер (остался не нужен - сорвались планы на семью, а одному он мне ни к чему). Большой, неуклюжий, страховка, налог, дорогой, ну и пр.. В общем, решил, что хватит С-класса, жутко захотел седан. На вторичку смотреть не люблю, - риск напороться высокий, а рынок этот знаю плохо, да и знакомых на нем нет. Решил пойти к дилерам за свежачком. Кто в теме - знают С-класс и его варианты на рынке. Пока мои аппарат не продан, но средний ценник - около 1 млн., машине всего год, пробег маленький.
+                    С-класс хоть и конская цена, но дешевле, думаю, что-нибудь получится выручить и по деньгам.
+                    Так или иначе, проходит какое-то время, выставляю на продажу, и попутно начинаю ездить по дилерам. Объездил многих, покатался тест-драйвы, выводы для себя сделал.
+                    В общем, каждая поездка к дилеру у меня сводилось примерно к одному диалогу:
+                  </textarea>
+                </form>
+
+                <div class="col-md-7 col-lg-7 col-sm-7 col-xl-6 mx-auto">
+                    <div class="col-md-7 col-lg-7 col-sm-7 col-xl-6 mx-auto">
+                        <button id="check" class="btn btn-block btn-lg btn-primary">Проверить</button>
+                    </div>
+                </div>
+
+                <div class="container-fluid p-0" id="resultdiv" style="display:none">
+                    <div class="container">
+                        <br>
+                        <hr>
+                        <br>
+                        <h3 class="mb-4">Вывод</h3>
+
+                        <div class="row">
+                            <div class="col-md-6 order-lg-1">
+                                <p class="words text-left"></p>
+                            </div>
+                            <div class="col-md-6 order-lg-2">
+                                <p>Всего найдено слов: <span id="wordcount"></span></p>
+                                <div class="stats"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="call-to-action text-white text-center">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-9 mx-auto">
+                        <h2 class="mb-4">Расскажи другим и помоги сохранить наш язык!</h2>
+                    </div>
+                    <div class="col-lg-8 h-100 text-center text-lg-right my-auto">
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item mr-3">
+                                <button class="btn btn-block btn-lg btn-primary">
+                                    <i class="fa fa-facebook fa-2x fa-fw"></i>
+                                </button>
+                            </li>
+                            <li class="list-inline-item mr-3">
+                                <button class="btn btn-block btn-lg btn-primary">
+                                    <i class="fa fa-twitter fa-2x fa-fw"></i>
+                                </button>
+                            </li>
+                            <li class="list-inline-item">
+                                <button class="btn btn-block btn-lg btn-primary">
+                                    <i class="fa fa-instagram fa-2x fa-fw"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 h-100 text-center right my-auto">
+                        <ul class="list-inline mb-2">
+                            <li class="list-inline-item">
+                                <a href="https://twitter.com/sohrani_russkij" target="_blank">Twitter</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+
+
+        <!-- Bootstrap -->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="js/words.js" async></script>
+        <script src="js/app.js" async></script>
+
+        <!-- Go to www.addthis.com/dashboard to customize your tools -->
+        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5adbf5e96a86c055"></script>
+    </body>
+</html>
