@@ -1,5 +1,5 @@
 body {
-  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 h1,
@@ -8,7 +8,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 700;
 }
 
@@ -123,4 +123,71 @@ header.masthead h1 {
 footer.footer {
   padding-top: 4rem;
   padding-bottom: 4rem;
+}
+
+.navbar {
+  background-color: #0077b0;
+}
+
+p, footer a, .stats-info h2 {
+  color: #3B4256 !important;
+}
+
+.navbar-brand, button {
+  padding-top: 0;
+  padding-bottom: 0;
+  color: #F4F7FB !important;
+}
+
+.editor-block {
+  padding: 10px 20px;
+  background: #fff;
+}
+.ql-snow .ql-picker.ql-header {
+  width: 120px;
+}
+.ql-container {
+    font-size: 16px;
+}
+.ql-toolbar.ql-snow {
+  padding: 5px;
+}
+#text-editor {
+  border: 0;
+  padding: 2px;
+}
+.ql-editor.ql-blank::before {
+  left: 0;
+  color: #3B4256;
+}
+.ql-editor {
+  padding: 12px 0;
+  color: #3B4256;
+}
+.standalone-container {
+  /*margin: 50px auto;
+  max-width: 720px;*/
+}
+#snow-container {
+  height: 400px;
+}
+
+.ql-container.ql-snow {
+  border: 0
+}
+.bg-light {
+    background-color: #F4F7FB !important
+}
+
+.editor-tab {
+  font-size: 16px;
+  padding: 10px 10px 7px 10px;
+  margin-top: 20px;
+  margin-bottom:0;
+  background: #fff;
+  color: #3B4256;
+  width: 100px;
+}
+.word-title {
+  font-size: 24px;
 }

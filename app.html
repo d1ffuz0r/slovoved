@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Слововед - Говори Правильно</title>
+
+        <!-- Bootstrap -->
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Шрифты -->
+        <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" async>
+
+        <!-- Стили -->
+        <link rel="stylesheet" href="vendor/quill/quill.snow.css"/>
+        <link href="css/landing-page.css" rel="stylesheet">
+
+        <!-- javascript -->
+        <!-- Go to www.addthis.com/dashboard to customize your tools -->
+        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5adbf5e96a86c055"></script>
+
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="vendor/quill/quill.min.js"></script>
+
+        <script src="js/slovoved.js" async></script>
+        <script src="js/app.js" async></script>
+    </head>
+
+    <body class="bg-light">
+        <nav class="navbar navbar-light static-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">Слововед</a>
+            </div>
+        </nav>
+
+        <section class="container">
+            <h1 class="editor-tab">Редактор</h1>
+        </section>
+
+        <section class="container">
+            <div class="row" style="margin: 0">
+                <div class="editor-block col-md-9">
+                    <div class="standalone-container">
+                        <div id="snow-container"></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-example">
+                        <p>
+                        Не знаете с чего начать?
+                        Вставьте текст на русском языке или попробуйте наш пример.
+                        </p>
+                        <p class="text-left">
+                            <button class="btn btn-danger btn-lg example-inert">Вставить пример</button>
+                        </p>
+                    </div>
+                    <div class="stats-info" style="display:none">
+                        <h2 class="text-alert word-title">1/10</h2>
+                        <p class="word-info"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container" style="margin-top: 20px">
+            <div class="row">
+                <div class="col-md-9">
+                    <p>
+                        Слововед помогает избавиться от заимствованных без необходимости слов и найти им русскую замену.
+                        Подойдёт для блогеров, журналистов, школьников и студентов. Расскажите друзьям
+                    </p>
+                    <p>
+                        <script src="//yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+                        <script src="//yastatic.net/share2/share.js"></script>
+                        <div class="ya-share2" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,lj,viber,whatsapp,skype,telegram"></div>
+                    </p>
+                </div>
+                <div class="col-md-3">
+                    <div style="background: purple; margin-top: 0; width: 250px; height: 80px"></div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="container" style="margin-bottom: 20px">
+            <div class="row">
+                <div class="col-lg-12 h-100">
+                    <p class="text-muted small mb-4 mb-lg-0"><a href="https://cyberkolhoz.ru/" title='Кибернетический Колхоз "Батмас"'>&copy; КиберКолхоз "Батмас"</a></p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+
+          var Inline = Quill.import('blots/inline');
+
+          var Slovoved = function(quill, options) {
+              this.quill = quill;
+              this.options = options;
+
+              var self = this;
+
+              quill.on('text-change', function(delta, oldDelta, source) {
+                var slovovedScore = self.calculate();
+
+                var infoLabel = slovovedScore.score + '/10 слововедов ' + slovovedScore.emoji;
+                var infoText = 'Из '+slovovedScore.wordsCount+' слов найдено '+slovovedScore.altCount+' заимстоваваний - ' + slovovedScore.label;
+
+                $(options.statsContainer + ' .word-title').text(infoLabel);
+                $(options.statsContainer + ' .word-info').text(infoText);
+
+                if (source == 'api') {
+                  console.log(["An API call triggered this change.", delta, quill.getContents()]);
+                } else if (source == 'user') {
+                  console.log(["A user action triggered this change.", delta, quill.getContents()]);
+                }
+
+                $(".stats-example").hide();
+                $(".stats-info").show();
+            });
+          };
+
+          Slovoved.prototype.calculate = function() {
+            var text = this.quill.getText().trim();
+            var words = text.split(/\s+/);
+            var wordsCount = words.length;
+            var altCount = 0;
+
+            var counter = {};
+            for (word of words) {
+                var alternative = findAlternative(word);
+
+                if (alternative) {
+                    if (counter[alternative[0]]) {
+                        counter[alternative[0]].counter += 1
+                        altCount += 1;
+                    } else {
+                        counter[alternative[0]] = {
+                            counter: 1,
+                            alternative: alternative[1]
+                        };
+                        altCount += 1;
+                    }
+                }
+            }
+
+            var slovovedScore = this.calculateSlovovedScore(wordsCount, altCount);
+
+            return {
+                wordsCount: wordsCount,
+                altCount: altCount,
+                label: slovovedScore.label,
+                score: slovovedScore.score,
+                emoji: slovovedScore.emoji,
+            };
+          };
+
+          Slovoved.prototype.calculateSlovovedScore = function(totalWords, altWords) {
+            var percentage,
+                label,
+                emoji;
+
+            if (!altWords) {
+                percentage = 10;
+            } else {
+                percentage = 10 - Math.ceil((altWords / totalWords) * 10);
+            }
+
+            if (percentage == 10) {
+                label = 'наш человек';
+                emoji = '👍';
+            } else if (0 < percentage && percentage <= 4) {
+                label = 'вы наверняка английский шпион';
+                emoji = '👎';
+            } else if (4 < percentage && percentage < 10) {
+                label = 'похоже что вы американский партнёр';
+                emoji = '✋';
+            }
+
+            return {
+                label: label,
+                score: percentage,
+                emoji: emoji
+            };
+          };
+
+          Quill.register('modules/slovoved', Slovoved);
+
+          var quill = new Quill('#snow-container', {
+            placeholder: 'Попробуйте что-то написать....',
+            modules: {
+              slovoved: {
+                statsContainer: '.stats-info'
+              }
+            }
+          });
+
+          $('.example-inert').click(function(){
+            quill.setText('я у мамы дилер!');
+            quill.focus();
+          });
+        </script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-43030036-7"></script>
+        <script>
+        /**
+        if(window.location.host != '') {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-43030036-7');
+        }
+        **/
+        </script>
+
+        <!-- Yandex.Metrika counter -->
+        <script type="text/javascript" >
+        /**
+            if(window.location.host != '') {
+                (function (d, w, c) {
+                    (w[c] = w[c] || []).push(function() {
+                        try {
+                            w.yaCounter48640466 = new Ya.Metrika({
+                                id:48640466,
+                                clickmap:true,
+                                trackLinks:true,
+                                accurateTrackBounce:true,
+                                webvisor:true
+                            });
+                        } catch(e) { }
+                    });
+
+                    var n = d.getElementsByTagName("script")[0],
+                        s = d.createElement("script"),
+                        f = function () { n.parentNode.insertBefore(s, n); };
+                    s.type = "text/javascript";
+                    s.async = true;
+                    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+                    if (w.opera == "[object Opera]") {
+                        d.addEventListener("DOMContentLoaded", f, false);
+                    } else { f(); }
+                })(document, window, "yandex_metrika_callbacks");
+            }
+        **/
+        </script>
+        <noscript>
+        <div><img src="https://mc.yandex.ru/watch/48640466" style="position:absolute; left:-9999px;" alt="" /></div>
+        </noscript>
+    </body>
+</html>
