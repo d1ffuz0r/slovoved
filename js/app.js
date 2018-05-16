@@ -1,73 +1,133 @@
-var output_div = $(".words");
-var stats_div = $(".stats");
+var Inline = Quill.import('blots/inline');
+var Module = Quill.import('core/module');
+var slovoTimer;
+var wordsCache = {};
 
-function replaceWord(word, alternative) {
-    return '<span style="color: red" title="' + word + ' -> ' + alternative + '"> '+ word + '</span>';
+function cleanText(txt) {
+  return txt.replace(/[^А-Яа-яA-Za-z\s\-]/g, '');
 }
 
-function colorRow(counter) {
-    if (0 < counter <= 1) {
-        return 'table-info';
-    } else if (2 < counter <= 5 ) {
-        return 'table-warning'
-    } else if (counter > 5) {
-        return 'table-danger';
+class SlovoBlot extends Inline {
+  static create (value) {
+      var node = super.create();
+      node.setAttribute('class', 'sv-detected');
+      node.setAttribute('data-placement', 'top');
+      node.setAttribute('data-toggle', 'popover');
+      node.setAttribute('data-container', 'body');
+      return node;
+  }
+}
+SlovoBlot.blotName = 'badword';
+SlovoBlot.tagName = 'em';
+
+
+var processWords = function() {
+  var index = 0;
+  var words = quill.getText().split(/\s+/);
+
+  var alternativeContainer = $('.word-alternatives');
+  alternativeContainer.html('');
+  
+  for (var word of words) {
+    var wordLength = word.length;
+    word = cleanText(word);
+
+    var alternative = findAlternative(word);
+    if (alternative) {
+      wordsCache[word] = alternative;
+      quill.formatText(index, index + wordLength, 'badword', true, 'silent');
+      alternativeContainer.append('<p>' + word + ' -> ' + alternative[1] + '</p>')
+    } else {
+      quill.removeFormat(index - 1, index + wordLength, 'badword', true, 'silent');
     }
-}
+    index += wordLength + 1;
+  }
 
+  $(".stats-example").hide();
+  $(".stats-info").show();
+  $('.sv-detected').hover(
+    function(ev){
+      var text = cleanText(ev.target.innerText);
+      var altWord = wordsCache[text];
+      console.log(altWord)
+      var altText = 'Слово <b>'+ text + '</b> может быть заменено на <b>' +  altWord[1] + '</b>';
+      $(ev.target).popover({html: true, content: altText}).popover('show');
+    },
+    function(ev){
+      $(ev.target).popover('hide');
+    }
+  );
+};
 
-$("body").ready(function(){
-    $("#check").click(function() {
-        $("#resultdiv").show();
+var Slovoved = function(quill, options) {
+  this.quill = quill;
+  this.options = options;
 
-        var text = $("#text").val();
-        if (text === '') {
-            alert("введите текст");
-            return
-        }
-        var output = [];
+  var self = this;
 
-        var words = text.split(' ');
+  quill.on(Quill.events.EDITOR_CHANGE, function(eventName, delta, oldDelta, source) {
+    var slovovedScore = self.calculate();
 
-        var counter = {};
+    var infoLabel = slovovedScore.score + '/10 слововедов ' + slovovedScore.emoji;
+    var infoText = 'Из '+slovovedScore.wordsCount+' слов найдено '+slovovedScore.altCount+' заимстоваваний - ' + slovovedScore.label;
 
-        for (word of words) {
-            var alternative = findAlternative(word);
-            var newWord = word;
+    $(options.statsContainer + ' .word-title').text(infoLabel);
+    $(options.statsContainer + ' .word-info').text(infoText);
 
-            if (alternative) {
-                newWord = replaceWord(word, alternative[1]);
-                if (counter[alternative[0]]) {
-                    counter[alternative[0]].counter += 1
-                } else {
-                    counter[alternative[0]] = {
-                        counter: 1,
-                        alternative: alternative[1]
-                    }
-                }
-            }
-            output.push(newWord);
-        }
-        output_div.html(output.join(' '));
+    if (eventName == Quill.events.TEXT_CHANGE && source == 'user') {
+      clearTimeout(slovoTimer);
+      slovoTimer = setTimeout(processWords, 1000);
+    }
+  });
+};
 
-        var words = Object.keys(counter);
-        var wordCount = words.length;
-        var output = '';
+Slovoved.prototype.calculate = function() {
+  var words = quill.getText().split(/\s+/);
+  var wordsCount = words.length;
+  var altCount = 0;
 
-        if (wordCount) {
-            for (word of words) {
-                var alternative = counter[word];
-                output += '<tr class="' + colorRow(alternative.counter) + '"><td>' + alternative.counter + '</td><td>' + word + '</td><td>' + alternative.alternative + '</td></tr>';
-            }
-            $('#wordcount').html(wordCount);
-        } else {
-            var output = '<h3>Поздаврляю! У вас чистейший Русский!🇷🇺</h3>';
-        }
+  var counter = {};
+  for (var word of words) {
+      word = cleanText(word);
+      var alternative = findAlternative(word);
 
-        stats_div.html(output);
+      if (alternative) {
+          if (counter[alternative[0]]) {
+              counter[alternative[0]].counter += 1
+              altCount += 1;
+          } else {
+              counter[alternative[0]] = {
+                  counter: 1,
+                  alternative: alternative[1]
+              };
+              altCount += 1;
+          }
+      }
+  }
 
-        $('html, body').animate({
-            scrollTop: parseInt($('#resultdiv').offset().top)
-        }, 900);
-    });
+  var slovovedScore = calculateSlovovedScore(wordsCount, altCount);
+
+  return {
+      wordsCount: wordsCount,
+      altCount: altCount,
+      label: slovovedScore.label,
+      score: slovovedScore.score,
+      emoji: slovovedScore.emoji,
+  };
+};
+
+Quill.register(SlovoBlot);
+Quill.register('modules/slovoved', Slovoved);
+
+var quill = new Quill('#snow-container', {
+  placeholder: 'Попробуйте написать что нибудь....',
+  modules: {
+    slovoved: {
+      statsContainer: '.stats-info'
+    }
+  }
+});
+
+$('.example-inert').click(function(){
+  quill.setContents({ops: [{insert: 'я у мамы дилер!'}]}, 'user');
 });
