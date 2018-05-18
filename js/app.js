@@ -123,7 +123,7 @@ var quill;
 
 $("body").ready(function(){
   quill = new Quill('#snow-container', {
-    placeholder: 'Попробуйте написать что нибудь....',
+    placeholder: 'Попробуйте написать что-нибудь....',
     modules: {
       slovoved: {
         statsContainer: '.stats-info'
