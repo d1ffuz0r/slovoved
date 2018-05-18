@@ -118,7 +118,9 @@ Slovoved.prototype.calculate = function() {
 
 Quill.register(SlovoBlot);
 Quill.register('modules/slovoved', Slovoved);
+
 var quill;
+
 $("body").ready(function(){
   quill = new Quill('#snow-container', {
     placeholder: 'Попробуйте написать что нибудь....',
