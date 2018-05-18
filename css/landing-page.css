@@ -193,10 +193,15 @@ p, footer a, .stats-info h2 {
 }
 
 .sv-detected {
-    background-color: #ffb62752;
-    padding: 3px 2px;
-    margin: 0 -2px;
-    color: #e94b3d;
-    font-style: normal;
-    border-radius: .2em;
+  background-color: #ffb62752;
+  padding: 3px 2px;
+  margin: 0 -2px;
+  color: #e94b3d;
+  font-style: normal;
+  border-radius: .2em;
+}
+.word-alternatives p{
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
 }

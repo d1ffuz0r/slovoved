@@ -36,7 +36,7 @@ var processWords = function() {
     if (alternative) {
       wordsCache[word] = alternative;
       quill.formatText(index, index + wordLength, 'badword', true, 'silent');
-      alternativeContainer.append('<p>' + word + ' -> ' + alternative[1] + '</p>')
+      alternativeContainer.append('<p>' + word + ' <i class="fa fa-long-arrow-right"></i> ' + alternative[1] + '</p>')
     } else {
       quill.removeFormat(index - 1, index + wordLength, 'badword', true, 'silent');
     }

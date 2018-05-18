@@ -343,7 +343,8 @@ var words = [
 function findAlternative(word) {
   var alternative = null;
   for (suggestion of words) {
-    if (word.toLowerCase().trim().indexOf(suggestion[0]) !== -1) {
+    var regexp = new RegExp('^' + suggestion[0] + '.*');
+    if (word.toLowerCase().trim().search(regexp) !== -1) {
       return suggestion;
     };
   }
@@ -368,7 +369,7 @@ var calculateSlovovedScore = function(totalWords, altWords) {
       label = 'вы наверняка английский шпион';
       emoji = '👎';
   } else if (4 < percentage && percentage < 10) {
-      label = 'похоже что вы американский партнёр';
+      label = 'похоже, что вы американский партнёр';
       emoji = '✋';
   }
 
