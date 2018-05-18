@@ -27,7 +27,7 @@ var processWords = function() {
 
   var alternativeContainer = $('.word-alternatives');
   alternativeContainer.html('');
-  
+
   for (var word of words) {
     var wordLength = word.length;
     word = cleanText(word);
@@ -118,16 +118,24 @@ Slovoved.prototype.calculate = function() {
 
 Quill.register(SlovoBlot);
 Quill.register('modules/slovoved', Slovoved);
-
-var quill = new Quill('#snow-container', {
-  placeholder: 'Попробуйте написать что нибудь....',
-  modules: {
-    slovoved: {
-      statsContainer: '.stats-info'
+var quill;
+$("body").ready(function(){
+  quill = new Quill('#snow-container', {
+    placeholder: 'Попробуйте написать что нибудь....',
+    modules: {
+      slovoved: {
+        statsContainer: '.stats-info'
+      }
     }
-  }
-});
+  });
 
-$('.example-inert').click(function(){
-  quill.setContents({ops: [{insert: 'я у мамы дилер!'}]}, 'user');
-});
+  var slovovedCachedText = localStorage.getItem('slovovedText')
+  if (slovovedCachedText) {
+     quill.setContents({'ops': [{insert: slovovedCachedText}]}, 'user');
+     localStorage.removeItem('slovovedText')
+  }
+
+  $('.example-inert').click(function(){
+    quill.setContents({ops: [{insert: 'я у мамы дилер!'}]}, 'user');
+  });
+})

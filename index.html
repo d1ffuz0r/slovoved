@@ -19,27 +19,9 @@
 
         <!-- Стили -->
         <link href="css/landing-page.css" rel="stylesheet">
-
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-43030036-7"></script>
-        <script>
-        if(window.location.host != '') {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'UA-43030036-7');
-        }
-        </script>
     </head>
 
     <body class="bg-light">
-        <nav class="navbar navbar-light static-top">
-            <div class="container">
-                <a class="navbar-brand" href="#">Говори Правильно</a>
-            </div>
-        </nav>
-
         <header class="masthead text-white text-center">
             <div class="overlay"></div>
             <div class="container">
@@ -153,110 +135,58 @@
         <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="js/slovoved.js" async></script>
         <script lang="javascript">
-            var output_div = $(".words");
-            var stats_div = $(".stats");
-
-            function replaceWord(word, alternative) {
-                return '<span style="color: red" title="' + word + ' -> ' + alternative + '"> '+ word + '</span>';
-            }
-
-            function colorRow(counter) {
-                if (0 < counter <= 1) {
-                    return 'table-info';
-                } else if (2 < counter <= 5 ) {
-                    return 'table-warning'
-                } else if (counter > 5) {
-                    return 'table-danger';
-                }
-            }
-
-
             $("body").ready(function(){
                 $("#check").click(function() {
-                    $("#resultdiv").show();
-
                     var text = $("#text").val();
                     if (text === '') {
                         alert("введите текст");
                         return
-                    }
-                    var output = [];
-
-                    var words = text.split(/\s+/);
-
-                    var counter = {};
-
-                    for (word of words) {
-                        var alternative = findAlternative(word);
-                        var newWord = word;
-
-                        if (alternative) {
-                            newWord = replaceWord(word, alternative[1]);
-                            if (counter[alternative[0]]) {
-                                counter[alternative[0]].counter += 1
-                            } else {
-                                counter[alternative[0]] = {
-                                    counter: 1,
-                                    alternative: alternative[1]
-                                }
-                            }
-                        }
-                        output.push(newWord);
-                    }
-                    output_div.html(output.join(' '));
-
-                    var words = Object.keys(counter);
-                    var wordCount = words.length;
-                    var output = '';
-
-                    if (wordCount) {
-                        for (word of words) {
-                            var alternative = counter[word];
-                            output += '<tr class="' + colorRow(alternative.counter) + '"><td>' + alternative.counter + '</td><td>' + word + '</td><td>' + alternative.alternative + '</td></tr>';
-                        }
-                        $('#wordcount').html(wordCount);
                     } else {
-                        var output = '<h3>Поздаврляю! У вас чистейший Русский!🇷🇺</h3>';
+                        localStorage.setItem('slovovedText', 'text');
+                        window.location = window.location.host + '/slovoved.html';
                     }
 
-                    stats_div.html(output);
-
-                    $('html, body').animate({
-                        scrollTop: parseInt($('#resultdiv').offset().top)
-                    }, 900);
                 });
             });
         </script>
         <!-- Go to www.addthis.com/dashboard to customize your tools -->
         <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5adbf5e96a86c055"></script>
 
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-43030036-7"></script>
+
         <!-- Yandex.Metrika counter -->
         <script type="text/javascript" >
             if(window.location.host != '') {
-                (function (d, w, c) {
-                    (w[c] = w[c] || []).push(function() {
-                        try {
-                            w.yaCounter48640466 = new Ya.Metrika({
-                                id:48640466,
-                                clickmap:true,
-                                trackLinks:true,
-                                accurateTrackBounce:true,
-                                webvisor:true
-                            });
-                        } catch(e) { }
-                    });
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'UA-43030036-7');
 
-                    var n = d.getElementsByTagName("script")[0],
-                        s = d.createElement("script"),
-                        f = function () { n.parentNode.insertBefore(s, n); };
-                    s.type = "text/javascript";
-                    s.async = true;
-                    s.src = "https://mc.yandex.ru/metrika/watch.js";
+              (function (d, w, c) {
+                (w[c] = w[c] || []).push(function() {
+                  try {
+                    w.yaCounter48640466 = new Ya.Metrika({
+                      id:48640466,
+                      clickmap:true,
+                      trackLinks:true,
+                      accurateTrackBounce:true,
+                      webvisor:true
+                      });
+                    } catch(e) { }
+                });
 
-                    if (w.opera == "[object Opera]") {
-                        d.addEventListener("DOMContentLoaded", f, false);
-                    } else { f(); }
-                })(document, window, "yandex_metrika_callbacks");
+                var n = d.getElementsByTagName("script")[0],
+                  s = d.createElement("script"),
+                  f = function () { n.parentNode.insertBefore(s, n); };
+                s.type = "text/javascript";
+                s.async = true;
+                s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+                if (w.opera == "[object Opera]") {
+                  d.addEventListener("DOMContentLoaded", f, false);
+                } else { f(); }
+              })(document, window, "yandex_metrika_callbacks");
             }
         </script>
         <noscript><div><img src="https://mc.yandex.ru/watch/48640466" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
