@@ -111,8 +111,6 @@
         <!-- Yandex.Metrika counter -->
         <script type="text/javascript" >
             if(window.location.host != '') {
-                Raven.config('https://0d7f679591bb4b5891013f2c83ff5cc9@sentry.io/1207442').install()
-
                 (function (d, w, c) {
                     (w[c] = w[c] || []).push(function() {
                         try {
@@ -137,6 +135,10 @@
                         d.addEventListener("DOMContentLoaded", f, false);
                     } else { f(); }
                 })(document, window, "yandex_metrika_callbacks");
+
+                try {
+                    Raven.config('https://0d7f679591bb4b5891013f2c83ff5cc9@sentry.io/1207442').install()
+                } catch (err) {}
             }
         </script>
         <noscript>
