@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 NAME="slovoved"                                # Name of the application
-DJANGODIR=/opt/slovoved/                       # Django project directory
+DJANGODIR=/var/www/slovoved/                   # Django project directory
 SOCKFILE=/tmp/gunicorn_slovoved.sock           # we will communicate using this unix socket
-USER=ck                                        # the user to run as
-GROUP=ck                                       # the group to run as
+USER=cyberkolhoz                               # the user to run as
+GROUP=cyberkolhoz                              # the group to run as
 NUM_WORKERS=1                                  # how many worker processes should Gunicorn spawn
 DJANGO_SETTINGS_MODULE=slovoved.settings_prod  # which settings file should Django use
 DJANGO_WSGI_MODULE=slovoved.wsgi               # WSGI module name

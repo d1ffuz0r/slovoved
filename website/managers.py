@@ -9,7 +9,7 @@ class StopWordManager(models.Manager):
                 sql += 'UNION\n'
             sql += """SELECT id, keyword, replacement, '{0}' as original, similarity(keyword, '{1}') as sml
           FROM website_stopword
-          WHERE keyword %% '{1}'\n""".format(*w)
+          WHERE keyword %% to_tsquery('russian', '{1}')::varchar\n""".format(*w)
 
         results = self.get_queryset().raw(sql)
         results = [r for r in results if r.sml >= score]
