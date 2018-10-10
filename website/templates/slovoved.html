@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+    <title>Слововед - Говори Правильно</title>
+
+    <!-- Стили -->
+    <link rel="stylesheet" href="{% static 'vendor/quill/quill.snow.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/quill/quill.core.css' %}"/>
+
+    <!-- javascript -->
+    <script src="https://cdn.ravenjs.com/3.25.1/raven.min.js" crossorigin="anonymous"></script>
+
+    <script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+    <script src="{% static 'vendor/quill/quill.core.js' %}"></script>
+
+    <script src="{% static 'js/app.js' %}" async></script>
+    {% csrf_token %}
+    <script type="text/javascript">
+    // using jQuery
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    </script>
+{% endblock %}
+
+{% block body %}
+    <nav class="navbar navbar-light static-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Слововед</a>
+        </div>
+    </nav>
+
+    <section class="container">
+        <h1 class="editor-tab">Редактор</h1>
+    </section>
+
+    <section class="container">
+        <div class="row" style="margin: 0">
+            <div class="editor-block col-md-9">
+                <div class="standalone-container">
+                    <div id="snow-container"></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-example">
+                    <p>
+                    Не знаете с чего начать?
+                    Вставьте текст на русском языке или попробуйте наш пример.
+                    </p>
+                    <p class="text-left">
+                        <button class="btn btn-danger btn-lg example-inert">Вставить пример</button>
+                    </p>
+                </div>
+                <div class="stats-info" style="display:none">
+                    <h2 class="text-alert word-title">1/10</h2>
+                    <p class="word-info"></p>
+                    <hr>
+                    <div class="list-group word-alternatives">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container" style="margin-top: 20px">
+        <div class="row">
+            <div class="col-md-9">
+                <p>
+                    Слововед помогает избавиться от заимствованных без необходимости слов и найти им русскую замену.
+                    Подойдёт для блогеров, журналистов, школьников и студентов. Расскажите друзьям
+                </p>
+                <p>
+                    <script src="https://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+                    <script src="https://yastatic.net/share2/share.js"></script>
+                    <div class="ya-share2" data-url="https://govori-pravilno.ru/slovoved.html" data-services="vkontakte,telegram,viber,twitter,odnoklassniki,lj,whatsapp,facebook"></div>
+                </p>
+            </div>
+            <div class="col-md-3">
+                <div style="margin-top: 0; width: 250px; height: 80px;">
+                    <blockquote class="blockquote" style=" border: 1px solid rgba(0,0,0,.1); padding: 5px; border-radius: 0.2em">
+                        <!--<p class="mb-0" style="font-size: 12px;">Мы из всех исторических катастроф вынесли и сохранили в чистоте великий русский язык, он передан нам нашими дедами и отцами…</p>-->
+                        <!--<footer style="font-size: 12px;" class="text-right blockquote-footer">Василий Шукшин</footer>-->
+                        <p class="mb-0" style="font-size: 12px;">Употреблять иностранное слово, когда есть равносильное ему русское слово - значит оскорблять и здравый смысл и здравый вкус.</p>
+                        <footer style="font-size: 12px;" class="text-right blockquote-footer">В.Г. Белинский</footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
