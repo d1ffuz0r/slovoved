@@ -1,18 +1,30 @@
+import re
+
 from django.db import models
 
 
 class StopWordManager(models.Manager):
-    def get_words_replacement(self, words, score=0.6):
-        sql = """"""
-        for index, w in enumerate(words):
-            if index > 0:
-                sql += 'UNION\n'
-            sql += """SELECT id, keyword, replacement, '{0}' as original, similarity(keyword, '{1}') as sml
-          FROM website_stopword
-          WHERE keyword %% to_tsquery('russian', '{1}')::varchar\n""".format(*w)
+    def sanitize_text(self, text):
+        index = 0
+        for w in re.split(r'\s', text):
+            original = w
+            length = len(w)
+            sanitized = re.sub(r'[^А-яA-z0-9\- ]', '', w.strip('- ,:!')).replace('-', ' | ')
+            yield (original, sanitized, index, length)
+            index += (length + 1)
 
-        results = self.get_queryset().raw(sql)
-        results = [r for r in results if r.sml >= score]
-
-        return results
-
+    def get_words_replacement(self, words):
+        values = ", ".join("('{0}', '{1}', {2}, {3})".format(*word) for word in words)
+        sql = '''WITH words_to_check(original, sanitized, position, length) AS (values {values})
+SELECT st.id as id,
+       st.keyword as keyword,
+       st.replacement as replacement,
+       words_to_check.original as original,
+       words_to_check.sanitized as sanitized,
+       words_to_check.position as position,
+       words_to_check.length as length
+FROM website_stopword AS st
+JOIN words_to_check
+    ON to_tsvector('russian', st.keyword) @@ to_tsquery('russian', words_to_check.sanitized);
+'''.format(values=values)
+        return self.get_queryset().raw(sql)

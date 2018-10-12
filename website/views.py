@@ -1,5 +1,4 @@
 import json
-import re
 
 from django.views.generic import View, TemplateView
 from django.core.exceptions import ValidationError
@@ -16,23 +15,27 @@ class SlovovedView(TemplateView):
     template_name = 'slovoved.html'
 
 
-class ValidationView(View):
+class WordValidationView(View):
+    def serialize(self, record):
+        return {
+            'original': record.original,
+            'replacement': record.replacement,
+            'position': record.position,
+            'length': record.length
+        }
+
     def post(self, request):
-        text = request.POST.get('text')
+        text = json.loads(request.body).get('text', [])
         if not text:
-            raise ValidationError('Нет данных в text')
+            raise ValidationError('Нет данных в words')
 
-        candidates = (
-            (word, re.sub(r'[^A-zА-я0-9\- ]', '', word))
-            for word in text.split()
-        )
+        words = list(StopWord.objects.sanitize_text(text))
+        results = StopWord.objects.get_words_replacement(words)
+        results = [self.serialize(record) for record in results]
 
-        results = StopWord.objects.get_words_replacement(candidates)
-        results = [
-            {
-                'original': r.original,
-                'keyword': r.keyword,
-                'replacement': r.replacement
-            } for r in results
-        ]
-        return HttpResponse(json.dumps(results), content_type='application/json')
+        output = {
+            'results': results,
+            'bad_count': len(results),
+            'total_count': len(words)
+        }
+        return HttpResponse(json.dumps(output), content_type='application/json')
