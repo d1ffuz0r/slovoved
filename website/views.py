@@ -25,7 +25,7 @@ class WordValidationView(View):
         }
 
     def post(self, request):
-        text = json.loads(request.body).get('text', [])
+        text = str(json.loads(request.body).get('text', ''))
         if not text:
             raise ValidationError('Нет данных в words')
 
