@@ -27,7 +27,10 @@ SECRET_KEY = 's+jl$=9j^3t-l^%cir9^6iz#wo+8oodhme_l2nm=ia+p5$_idf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    'govori-pravilno.com',
+]
 
 
 # Application definition
