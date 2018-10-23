@@ -20,5 +20,4 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=True)),
             ],
         ),
-        migrations.RunSQL('CREATE EXTENSION IF NOT EXISTS pg_tgrm;'),
     ]
