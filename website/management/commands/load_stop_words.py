@@ -9,13 +9,14 @@ def load_file(filename):
     with open(filename, 'r') as finp:
         reader = csv.DictReader(finp)
         for word in reader:
-           StopWord.objects.update_or_create(
-               keyword=word['keyword'],
-               defaults={
-                   'keyword': word['keyword'].lower(),
-                   'replacement': word['replacement'].lower(),
-                   'active': bool(word.get('active')) if word.get('active') else True,
-               })
+            is_active = bool(word.get('использовать')) if word.get('использовать') else True
+            StopWord.objects.update_or_create(
+                keyword=word['слово'],
+                defaults={
+                    'keyword': word['слово'].lower(),
+                    'replacement': word['замена'].lower(),
+                    'active': is_active,
+                })
 
 
 class Command(BaseCommand):
