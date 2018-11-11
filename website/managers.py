@@ -7,9 +7,9 @@ class StopWordManager(models.Manager):
     def sanitize_text(self, text):
         index = 0
         for w in re.split(r'\s', text):
-            original = w
+            original = w.replace('%', ' ')
             length = len(w)
-            sanitized = re.sub(r'[^А-яA-z0-9\- ]', '', w.strip('- ,:!')).replace('-', ' | ')
+            sanitized = re.sub(r'[^А-яёЁA-z0-9\-\s]', '', w.strip('- ,:!')).replace('-', ' | ')
             yield (original, sanitized, index, length)
             index += (length + 1)
 
