@@ -6,3 +6,4 @@
 
 * Академик - https://dic.academic.ru
 * Яндекс.Переводчик - https://translate.yandex.ru
+* Wiktionary - [Заимствованные слова в русском_языке](https://ru.wiktionary.org/wiki/Приложение:Заимствованные_слова_в_русском_языке)
