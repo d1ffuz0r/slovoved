@@ -1,0 +1,13 @@
+stages:
+  - test
+  - deploy
+
+tests:
+  stage: test
+  script: "echo 'test'"
+
+deploy:
+  stage: deploy
+  only:
+    - production
+  script: "echo 'success'"
