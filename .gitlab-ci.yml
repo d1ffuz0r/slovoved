@@ -1,0 +1,20 @@
+stages:
+  - validate
+  - test
+  - deploy
+
+flake8:
+  stage: validate
+  script: "echo 'flake8 validation'"
+
+tests:
+  stage: test
+  script: "echo 'test'"
+  when: on_success
+
+deploy:
+  stage: deploy
+  only:
+    - production
+  script: "echo 'success'"
+  when: on_success
