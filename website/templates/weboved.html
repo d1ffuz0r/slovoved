@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+    <title>Слововед - Говори Правильно</title>
+
+    <!-- javascript -->
+    <script src="https://cdn.ravenjs.com/3.25.1/raven.min.js" crossorigin="anonymous"></script>
+
+    <script src="{% static 'js/weboved.js' %}" async></script>
+    {% csrf_token %}
+    <script type="text/javascript">
+    // using jQuery
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    </script>
+{% endblock %}
+
+{% block body %}
+    <nav class="navbar navbar-light static-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Слововед</a>
+        </div>
+    </nav>
+
+    <section class="container" style="padding: 20px 15px">
+        <form action="">
+            <label for="text"><b>ССЫЛКА</b></label>
+            <input type="url" autofocus placeholder="Введите ссылку" name="url" id="text" required style="width: 85%">
+            <button class="btn btn-sm btn-success">Открыть</button>
+        </form>
+    </section>
+
+    <section class="container">
+        <div class="row" style="margin: 0">
+            <div class="editor-block col-md-12" style="padding: 10px">
+                <div class="standalone-container">
+                    <h3>Предоставьте ссылку чтобы увидеть страницу</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container" style="margin-top: 20px">
+        <div class="row">
+            <div class="col-md-9">
+                <p>
+                    <script src="https://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+                    <script src="https://yastatic.net/share2/share.js"></script>
+                    <div class="ya-share2" data-url="https://govori-pravilno.ru/slovoved.html" data-services="vkontakte,telegram,viber,twitter,odnoklassniki,lj,whatsapp,facebook"></div>
+                </p>
+            </div>
+
+        </div>
+    </section>
+{% endblock %}

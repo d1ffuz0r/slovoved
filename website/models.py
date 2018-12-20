@@ -1,6 +1,6 @@
 from django.db import models
 
-from website.managers import StopWordManager
+from website.managers import StopWordManager, WebsitePageManager
 
 
 class StopWord(models.Model):
@@ -14,6 +14,7 @@ class StopWord(models.Model):
     active = models.BooleanField(default=True)
 
     objects = StopWordManager()
+    pages = WebsitePageManager()
 
     def __str__(self):
         return '{0.keyword} - {0.replacement}'.format(self)

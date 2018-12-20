@@ -1,5 +1,7 @@
 import re
+from urllib.parse import urlparse
 
+from bs4 import BeautifulSoup
 from django.db import models
 
 
@@ -28,3 +30,37 @@ JOIN words_to_check
     ON to_tsvector('russian', st.keyword) @@ to_tsquery('russian', words_to_check.sanitized);
 '''.format(values=values)
         return self.get_queryset().raw(sql)
+
+
+class WebsitePageManager(models.Manager):
+    def prepare_text(self, raw_text):
+        cleantext = BeautifulSoup(raw_text, "lxml").text
+        cleantext = re.sub(r'\t|\r\n|\n|\/', ' ', cleantext)
+        cleantext = re.sub(r'<.*?>', ' ', cleantext)
+        cleantext = re.sub(r'[^А-Яа-яёЁ\s]', ' ', cleantext)
+        cleantext = re.sub(r'\s{1,}', ' ', cleantext)
+        cleantext = cleantext.strip()
+        return cleantext
+
+    def process_page(self, content, results):
+        processed = set([])
+        for result in results:
+            if result.replacement in processed or not result.replacement:
+                continue
+            processed.add(result.replacement)
+
+            tmpl = ' <b style=\"background-color: #ffb62752; padding: 3px 2px; margin: 0 -2px; color: #e94b3d; font-style: normal; border-radius: .2em;\">{o} ({r})</b>'
+            content = re.sub(
+                '\s' + result.original,
+                tmpl.format(o=result.original, r=result.replacement),
+                content
+            )
+
+        return content
+
+    def fix_links(self, content, url):
+        ur = urlparse(url)
+        base_url = '{}://{}/'.format(ur.scheme, ur.hostname)
+        content = re.sub(r'="/', '="' + base_url, content)
+        content = re.sub(r"='/", "='" + base_url, content)
+        return content
