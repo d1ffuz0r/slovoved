@@ -16,5 +16,9 @@ class StopWord(models.Model):
     objects = StopWordManager()
     pages = WebsitePageManager()
 
+    class Meta:
+        verbose_name = 'Слово'
+        verbose_name_plural = 'Слова'
+
     def __str__(self):
         return '{0.keyword} - {0.replacement}'.format(self)

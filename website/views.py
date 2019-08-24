@@ -1,11 +1,13 @@
 import json
 
-from django.views.generic import View, TemplateView
-from django.core.exceptions import ValidationError
-from django.views.generic.base import HttpResponse
 import requests
+from django.core.exceptions import ValidationError
+from django.db.models import Count
+from django.views.generic import View, TemplateView, ListView
+from django.views.generic.base import HttpResponse
 
 from website.models import StopWord
+from zritel.models import Source, Record
 
 
 class IndexView(TemplateView):
@@ -52,10 +54,26 @@ class LoadUrlView(View):
         response = requests.get(url, timeout=5)
         content = response.content.decode('utf-8')
 
-        clean_text = StopWord.pages.prepare_text(content)
+        clean_text = StopWord.pages.prepare_text(html=content)
         words = StopWord.objects.sanitize_text(clean_text)
         results = StopWord.objects.get_words_replacement(words)
         content = StopWord.pages.process_page(content, results)
         content = StopWord.pages.fix_links(content, url)
 
         return HttpResponse(content)
+
+
+class SaitovedView(ListView):
+    template_name = 'saitoved_sources.html'
+    queryset = Source.objects.all().annotate(cnt=Count('record')).order_by('-last_check_at')
+
+
+class RecordsView(ListView):
+    template_name = 'saitoved_records.html'
+    queryset = Record.objects.all().order_by('added_at')
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super(RecordsView, self).get_queryset()
+        queryset = queryset.filter(source_id=self.kwargs['pk'])
+        return queryset

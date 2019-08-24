@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+    <title>Слововед - Говори Правильно</title>
+{% endblock %}
+
+{% block body %}
+    <nav class="navbar navbar-light static-top">
+        <div class="container">
+            <a class="navbar-brand" href="/saitoved/">Слововед</a>
+        </div>
+    </nav>
+
+    <section class="container">
+        <br>
+        <h5>{{object_list.0.source.title}} - {{object_list.0.source.get_kind_display}}</h5>
+        <br>
+    </section>
+
+    <section class="container">
+        {% for source in object_list %}
+            <p>{{ source.text|truncatewords:20 }}</p>
+            {% if source.report %}
+                {% for k, v in source.report.items %}
+                <b style="color: red">{{ k }}</b> - <b>{{ v }}</b>,
+                {% endfor %}
+            {% else %}
+                <b style="color: green">Чисто!</b>
+            {% endif %}
+            <p>Ссылка: <a href="{{source.url}}" target="_blank">{{source.url}}</a></p>
+            <hr>
+        {% endfor %}
+        </ul>
+
+        {% if is_paginated %}
+        <div class="pagination">
+            <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; Первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+            {% endif %}
+
+            <span class="current">
+                Страница {{ page_obj.number }}  из {{ paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+            {% endif %}
+            </span>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="container" style="margin-top: 20px">
+        <div class="row">
+            <div class="col-md-9">
+                <p>
+                    <script src="https://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+                    <script src="https://yastatic.net/share2/share.js"></script>
+                    <div class="ya-share2" data-url="https://govori-pravilno.ru/saitoved/" data-services="vkontakte,telegram,viber,twitter,odnoklassniki,lj,whatsapp,facebook"></div>
+                </p>
+            </div>
+            <div class="col-md-3">
+                <div style="margin-top: 0; width: 250px; height: 80px;">
+                    <blockquote class="blockquote" style=" border: 1px solid rgba(0,0,0,.1); padding: 5px; border-radius: 0.2em">
+                        <!--<p class="mb-0" style="font-size: 12px;">Мы из всех исторических катастроф вынесли и сохранили в чистоте великий русский язык, он передан нам нашими дедами и отцами…</p>-->
+                        <!--<footer style="font-size: 12px;" class="text-right blockquote-footer">Василий Шукшин</footer>-->
+                        <p class="mb-0" style="font-size: 12px;">Употреблять иностранное слово, когда есть равносильное ему русское слово - значит оскорблять и здравый смысл и здравый вкус.</p>
+                        <footer style="font-size: 12px;" class="text-right blockquote-footer">В.Г. Белинский</footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

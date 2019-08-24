@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  postgresql-slovoved:
+    image: postgres:11-alpine
+    container_name: postgresql-slovoved
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=ubuntu
+      - POSTGRES_PASSWORD=ubuntu
+      - POSTGRES_DB=slovoved

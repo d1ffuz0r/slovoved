@@ -33,8 +33,11 @@ JOIN words_to_check
 
 
 class WebsitePageManager(models.Manager):
-    def prepare_text(self, raw_text):
-        cleantext = BeautifulSoup(raw_text, "lxml").text
+    def prepare_text(self, html=None, text=None):
+        if html:
+            cleantext = BeautifulSoup(html, "lxml").text
+        else:
+            cleantext = text
         cleantext = re.sub(r'\t|\r\n|\n|\/', ' ', cleantext)
         cleantext = re.sub(r'<.*?>', ' ', cleantext)
         cleantext = re.sub(r'[^А-Яа-яёЁ\s]', ' ', cleantext)

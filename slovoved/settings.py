@@ -13,8 +13,11 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import urllib.parse as urlparse
 
+urlparse.uses_netloc.append('postgresql')
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -30,7 +33,6 @@ ALLOWED_HOSTS = [
     'govori-pravilno.ru',
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
 
+    'django_extensions',
+
+    'zritel.apps.ZritelConfig',
     'website.apps.WebsiteConfig',
 ]
 
@@ -77,18 +82,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'slovoved.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+
+POSTGRES_URL = urlparse.urlparse(os.environ.get('DATABASE_URL'))
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'slovoved',
-        'USER': 'cyberkolhoz',
+        'NAME': POSTGRES_URL.path[1:],
+        'USER': POSTGRES_URL.username,
+        'PASSWORD': POSTGRES_URL.password,
+        'HOST': POSTGRES_URL.hostname,
+        'PORT': POSTGRES_URL.port,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -108,13 +116,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGE_CODE = 'ru-RU'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -122,8 +129,19 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+VK_API_KEY = os.environ.get('VK_API_KEY')
+BROKER_URL = os.environ.get('BROKER_URL')
+
+CELERY_ACKS_LATE = True
+CELERYD_PREFETCH_MULTIPLIER = 1
+CELERY_SEND_EVENTS = False
+# Set Serializers
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TIMEZONE = 'Europe/Moscow'
