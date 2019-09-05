@@ -14,18 +14,43 @@
 
     <section class="container">
         <br>
-        <p>Наблюдение за опубликованными записями в социальных группах и новостных сайтах</p>
-        <br>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Источники</li>
+            </ol>
+        </nav>
     </section>
 
     <section class="container">
-        {% for source in object_list %}
-            <p>
-                <a href="/saitoved/{{source.pk}}/">{{ source.title }}</a> - {{source.url}} | {{source.last_check_at}}
-            </p>
-            <hr>
-        {% endfor %}
+        <h5>Наблюдение за наличием заимствованных слов в социальных группах и на новостных сайтах</h5>
+        <p>Ежедневный сбор и проверка опубликованных данных</p>
     </section>
+
+    <div class="container">
+        <div class="card-deck mb-3 text-center">
+        {% for source in object_list %}
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{source.title}}</h4>
+                </div>
+                <div class="card-body">
+<!--                        <h1 class="card-title pricing-card-title">$0 <small class="text-muted">/ mo</small></h1>-->
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Вид страницы: {{source.get_kind_display}}</li>
+                        <li>Всего записей: {{source.cnt}}</li>
+                        <li>Проверено: {{source.last_check_at}}</li>
+                        <li>Ссылка: <a href="{{source.url}}" target="_blank">{{source.url}}</a></li>
+                    </ul>
+                    <a href="/saitoved/{{source.pk}}/" class="btn btn-block btn-primary">К Записям</a>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 %}
+            </div>
+            <div class="card-deck mb-3 text-center">
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
 
     <section class="container" style="margin-top: 20px">
         <div class="row">

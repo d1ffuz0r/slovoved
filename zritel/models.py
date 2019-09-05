@@ -3,11 +3,13 @@ import urllib.parse as urlparse
 
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.db.models import signals
+from django.dispatch import receiver
 from django.utils import timezone
 
+from website.models import StopWord
 from zritel.collectors import VKCollector
 from zritel.managers import SourceManager, RecordManager
-from website.models import StopWord
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +37,10 @@ class Source(models.Model):
 
     def __str__(self):
         return '{0.title} - {0.kind}'.format(self)
+
+    @property
+    def next_update_time(self):
+        return self.last_check_at + timezone.timedelta(minutes=self.frequency)
 
     @property
     def group_name(self):
@@ -93,3 +99,15 @@ class Record(models.Model):
 
     def __str__(self):
         return '{0.url} - {0.source}'.format(self)
+
+
+@receiver(signals.post_save, sender=Source)
+def trigger_scan(sender, instance, created, **kwargs):
+    if created:
+        instance.schedule_scan()
+
+
+@receiver(signals.post_save, sender=Record)
+def trigger_processing(sender, instance, created, **kwargs):
+    if created:
+        instance.schedule_processing()

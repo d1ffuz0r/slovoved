@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 from django.utils import timezone
 
 
@@ -17,3 +18,9 @@ class RecordManager(models.Manager):
         queryset = self.get_queryset()
         queryset = queryset.filter(processed=False)
         return queryset
+
+    def bulk_create(self, objs, **kwargs):
+        results = super().bulk_create(objs, **kwargs)
+        for i in objs:
+            post_save.send(i.__class__, instance=i, created=True)
+        return results
