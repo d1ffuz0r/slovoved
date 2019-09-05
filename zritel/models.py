@@ -53,7 +53,7 @@ class Source(models.Model):
         raise NotImplementedError
 
     def scan_and_save_records(self):
-        logger.info(f'Обзор {self.title} (id={self.pk})')
+        logger.info('Обзор {0.title} (id={0.pk})'.format(self))
 
         new_records = self.collector.harvest()
 
