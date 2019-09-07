@@ -28,6 +28,7 @@ class Source(models.Model):
     active = models.BooleanField(default=True)
     last_check_at = models.DateTimeField(blank=True, null=True, help_text="Время последней проверки")
     frequency = models.PositiveIntegerField(help_text="Частота Проверок")
+    alert_enabled = models.BooleanField(default=False)
 
     objects = SourceManager()
 
@@ -84,7 +85,9 @@ class Record(models.Model):
         verbose_name = 'Запись'
         verbose_name_plural = 'Записи'
 
-    def process_text(self):
+    def process_text(self, send_alert=True):
+        has_been_processed = self.processed
+
         clean_text = StopWord.pages.prepare_text(text=self.text)
         words = StopWord.objects.sanitize_text(clean_text)
         results = StopWord.objects.get_words_replacement(words)
@@ -93,9 +96,17 @@ class Record(models.Model):
         self.processed = True
         self.save()
 
-    def schedule_processing(self):
+        if send_alert and not has_been_processed:
+            self.send_alert()
+
+    def schedule_labeling(self):
         from zritel.tasks import label_record
         label_record.delay(record_id=self.pk)
+
+    def send_alert(self):
+        if not self.source.alert_enabled:
+            return
+        print('Уведомить о', self.url)
 
     def __str__(self):
         return '{0.url} - {0.source}'.format(self)
@@ -110,4 +121,4 @@ def trigger_scan(sender, instance, created, **kwargs):
 @receiver(signals.post_save, sender=Record)
 def trigger_processing(sender, instance, created, **kwargs):
     if created:
-        instance.schedule_processing()
+        instance.schedule_labeling()
