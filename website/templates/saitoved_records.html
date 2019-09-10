@@ -31,8 +31,8 @@
     <section class="container">
         <ul class="list-group">
         {% for record in object_list %}
-            <li class="list-group-item">
-                <p>{{ record.text|truncatewords:20 }} <a href="{{record.url}}" target="_blank">Полный текст</a></p>
+            <li class="list-group-item" id="record-{{record.id}}">
+                <p><a href="#record-{{record.id}}">#</a> {{ record.text|truncatewords:20 }} <a href="{{record.url}}" target="_blank">Полный текст</a></p>
                 {% if record.report %}
                     <div class="alert alert-danger" role="alert">
                         {% with total=record.report.items|length %}

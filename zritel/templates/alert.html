@@ -1,0 +1,5 @@
+В сообщении обнаружено {{record.report.items|length}} заимствованных слов
+{% for word, replacement in record.report.items %}
+{{word}} - {{replacement}}
+{% endfor %}
+Полный список доступен на нашем сайте https://govori-pravilno.ru{{url}}#record-{{record.id}}

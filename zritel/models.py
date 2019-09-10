@@ -5,6 +5,8 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
+from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils import timezone
 
 from website.models import StopWord
@@ -103,6 +105,13 @@ class Record(models.Model):
     def schedule_labeling(self):
         from zritel.tasks import label_record
         label_record.delay(record_id=self.pk)
+
+    def get_alert_text(self):
+        context = {
+            'record': self,
+            'url': reverse('saitoved-records', kwargs={'slug': self.source.slug})
+        }
+        return render_to_string('alert.html', context=context)
 
     def send_alert(self):
         if not self.source.alert_enabled:
