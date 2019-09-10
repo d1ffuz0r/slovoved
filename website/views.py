@@ -65,15 +65,17 @@ class LoadUrlView(View):
 
 class SaitovedView(ListView):
     template_name = 'saitoved_sources.html'
-    queryset = Source.objects.filter(active=True).annotate(cnt=Count('record')).order_by('-last_check_at')
+    queryset = Source.objects.filter(active=True).order_by('-last_check_at').annotate(
+        cnt=Count('record')
+    )
 
 
 class RecordsView(ListView):
     template_name = 'saitoved_records.html'
-    queryset = Record.objects.all().order_by('added_at')
+    queryset = Record.objects.select_related('source').order_by('added_at')
     paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(source__active=True, source_id=self.kwargs['pk'])
+        queryset = queryset.filter(source__active=True, source__slug=self.kwargs['slug'])
         return queryset

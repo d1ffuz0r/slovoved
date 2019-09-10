@@ -41,7 +41,7 @@
                         <li>Проверено: {{source.last_check_at}}</li>
                         <li>Ссылка: <a href="{{source.url}}" target="_blank">{{source.url}}</a></li>
                     </ul>
-                    <a href="/saitoved/{{source.pk}}/" class="btn btn-block btn-primary">К Записям</a>
+                    <a href="{% url 'saitoved-records' slug=source.slug %}" class="btn btn-block btn-primary">К Записям</a>
                 </div>
             </div>
             {% if forloop.counter|divisibleby:3 %}

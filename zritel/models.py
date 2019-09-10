@@ -25,6 +25,7 @@ class Source(models.Model):
     title = models.CharField(max_length=512, help_text="Название источника")
     kind = models.CharField(max_length=36, choices=Kind.CHOICES)
     url = models.URLField(help_text="Ссылка")
+    slug = models.CharField(max_length=512, help_text="Путь", unique=True)
     active = models.BooleanField(default=True)
     last_check_at = models.DateTimeField(blank=True, null=True, help_text="Время последней проверки")
     frequency = models.PositiveIntegerField(help_text="Частота Проверок")
