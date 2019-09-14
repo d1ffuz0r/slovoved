@@ -18,4 +18,6 @@ export PYTHONPATH=$DJANGODIR:$PYTHONPATH
 exec celery worker \
     -A slovoved \
     -O fair \
-    -l INFO
+    -l INFO \
+    --without-gossip \
+    --without-mingle

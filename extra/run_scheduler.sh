@@ -17,4 +17,6 @@ export PYTHONPATH=$DJANGODIR:$PYTHONPATH
 
 exec celery beat \
     -A slovoved \
-    -l INFO
+    -l INFO \
+    --without-gossip \
+    --without-mingle
