@@ -20,4 +20,5 @@ exec celery worker \
     -O fair \
     -l INFO \
     --without-gossip \
-    --without-mingle
+    --without-mingle \
+    --without-heartbeat
