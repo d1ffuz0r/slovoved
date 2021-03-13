@@ -31,6 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     'govori-pravilno.ru',
+    'www.govori-pravilno.ru',
 ]
 
 # Application definition
