@@ -5,4 +5,4 @@ sentry-sdk==0.4.3
 bs4==0.0.1
 lxml==4.6.3
 requests==2.22.0
-Celery==4.3.0
+Celery==5.2.2
